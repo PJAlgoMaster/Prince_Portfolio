@@ -1,9 +1,9 @@
 "use client";
 import { useRef } from "react";
+import { motion } from "framer-motion";
 
 export default function ThreeDBoard({ imageUrl }: { imageUrl: string }) {
   const ref = useRef<HTMLDivElement>(null);
-
   function handleMouseMove(e: React.MouseEvent) {
     const card = ref.current;
     if (!card) return;
@@ -13,7 +13,6 @@ export default function ThreeDBoard({ imageUrl }: { imageUrl: string }) {
     card.style.setProperty('--rx', `${-(y - rect.height / 2) / 15}deg`);
     card.style.setProperty('--ry', `${(x - rect.width / 2) / 10}deg`);
   }
-
   function handleMouseLeave() {
     const card = ref.current;
     if (card) {
@@ -21,25 +20,25 @@ export default function ThreeDBoard({ imageUrl }: { imageUrl: string }) {
       card.style.setProperty('--ry', `0deg`);
     }
   }
-
   return (
-    <div
+    <motion.div
       ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="rounded-3xl shadow-2xl w-full md:max-w-[480px] aspect-[5/3] border border-blue-700/30 bg-black/70
-        transition-all duration-300 transform-gpu hover:scale-[1.025] cursor-pointer"
+      className="rounded-3xl shadow-2xl w-full max-w-full md:max-w-[420px] aspect-[5/3] bg-black/60 border border-blue-700/30 hover:scale-[1.025] transition-all duration-300"
       style={{
         perspective: "1000px",
         transform: "rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))",
+        cursor: "pointer"
       }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      tabIndex={0}
     >
       <img
         src={imageUrl}
-        alt="3D Interactive"
+        alt="3D Interactive Showcase"
         className="w-full h-full object-cover rounded-3xl"
         draggable={false}
       />
-    </div>
+    </motion.div>
   );
 }

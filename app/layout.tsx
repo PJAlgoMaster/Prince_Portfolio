@@ -1,30 +1,21 @@
-import './globals.css'
-import Navbar from '../components/Navbar'
-import PageTransition from '../components/PageTransition'
-import FluidOverlay from '../components/FluidHeroOverlay'
-import LenisProvider from '../components/LenisProvider'
-import type { ReactNode } from "react"
+// app/layout.tsx (Server Component - No "use client")
+import './globals.css';
+import type { Metadata } from 'next';
+import RootLayoutClient from './RootLayoutClient';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Prince Kumar Jha | Portfolio",
   description: "Animated, interactive meisken.dev-style portfolio",
-}
+};
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet" />
-      </head>
-      <body className="bg-[#08090D] text-white">
-        <LenisProvider />
-        <FluidOverlay />
-        <Navbar />
-        <PageTransition>
+      <body>
+        <RootLayoutClient>
           {children}
-        </PageTransition>
+        </RootLayoutClient>
       </body>
     </html>
-  )
+  );
 }

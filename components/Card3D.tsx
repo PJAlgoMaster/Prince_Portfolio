@@ -48,7 +48,7 @@ export default function Card3D({
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-3xl shadow-2xl p-6 pb-8 border border-gray-600 hover:scale-105 transition-all duration-300 transform hover:shadow-blue-600/40 ${className}`}
+      className={`w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-lg bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-3xl shadow-2xl p-6 pb-8 border border-gray-600 hover:scale-105 transition-all duration-300 transform hover:shadow-blue-600/40 ${className}`}
     >
       {children}
     </motion.a>

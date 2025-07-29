@@ -1,71 +1,83 @@
 "use client";
+
 import Card3D from "./Card3D";
-import { TypeAnimation } from "react-type-animation";
+import { motion } from "framer-motion";
+
+const projectsData = [
+  {
+    title: "Gesture-ControlledBrightnessAdjustment-System-2024-",
+    description:
+      "Developed a Python-based gesture-controlled brightness adjustment system using OpenCV, leveraging real-time hand gesture recognition, contour detection, and system APIs for intuitive and touchless control.",
+    img: "/assets/project-gesture.webp", // Make sure this file exists
+    link: "https://github.com/princejha1729/Gesture-ControlledBrightnessAdjustment-System-2024-",
+  },
+  {
+    title: "Prince_Portfolio",
+    description: "Portfolio built in React",
+    img: "/assets/portfolio.png", // Make sure this file exists
+    link: "https://github.com/princejha1729/Prince_Portfolio",
+  },
+  {
+    title: "Python-Service-Project-2023-",
+    description:
+      "Developed a Python script that automates email creation and delivery to authorized users. Script retrieves data from a database, formats it using HTML and CSS, and sends it to a designated admin email address.",
+    img: "/assets/pythonservice.webp", // Make sure this file exists
+    link: "https://github.com/princejha1729/Python-Service-Project-2023-",
+  },
+  {
+    title: "SKYCAST-WEATHER-APP",
+    description:
+      "Built a weather application using HTML, CSS, JavaScript, and API integration.",
+    img: "/assets/imagecard2.webp", // Make sure this file exists
+    link: "https://github.com/princejha1729/SKYCAST-WEATHER-APP",
+  },
+];
 
 export default function ProjectsGrid() {
   return (
-    <section className="min-h-screen w-full bg-black flex flex-col items-center justify-start pt-0">
-      {/* Profile Image */}
-      <div className="pt-8">
-        <img
-          src="/assets/prince.jpg" // <-- Update your profile image path
-          alt="Profile"
-          className="w-28 h-28 rounded-full border-4 border-white shadow-md object-cover"
-        />
-      </div>
-
-      {/* Heading with typing animation */}
-      <h1 className="text-white text-4xl sm:text-5xl font-extrabold text-center mt-6 mb-2 drop-shadow-lg">
-        <TypeAnimation
-          sequence={[
-            "My Projects 💡",
-            2000,
-            "Explore My Creations 🚀",
-            2000,
-          ]}
-          wrapper="span"
-          speed={30}
-          repeat={Infinity}
-        />
-      </h1>
-
-      <div className="w-full flex flex-col md:flex-row justify-center items-stretch gap-8 px-4 md:px-12 py-10">
-        {/* Gesture Project */}
-        <Card3D
-          url="https://github.com/PjAlgoMaster/Gesture-ControlledBrightnessAdjustment-System-2024-"
-          className="max-w-md"
+    <section className="w-full py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-7 px-2 xs:px-3 sm:px-6 md:px-8">
+        {projectsData.map((project, idx) => (
+          <Card3D key={idx} url={project.link}>
+            <div className="flex flex-col h-full">
+              <img
+                src={project.img}
+                alt={project.title}
+                className="rounded-2xl mb-4 w-full object-cover aspect-video max-h-[220px] sm:max-h-[180px] shadow-xl"
+                loading="lazy"
+                decoding="async"
+                style={{ background: "#19191b" }}
+              />
+              <div>
+                <h3 className="text-base xs:text-lg sm:text-xl font-bold text-yellow-300 mb-2 leading-snug truncate">
+                  {project.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-white/90">
+                  {project.description}
+                </p>
+              </div>
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mt-4 text-sm text-yellow-400 underline hover:text-yellow-300"
+              >
+                View on GitHub
+              </a>
+            </div>
+          </Card3D>
+        ))}
+        <motion.a
+          href="https://github.com/princejha1729?tab=repositories"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="sm:col-span-2 xl:col-span-3 text-center text-yellow-400 underline font-medium text-base mt-1"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <img
-            src="/assets/project-gesture.webp"
-            alt="Gesture Control Project"
-            className="w-full h-56 object-cover rounded-xl mb-4 shadow-md"
-            style={{ objectPosition: "right top" }}
-          />
-          <h3 className="text-xl font-bold text-blue-300 mb-2 hover:text-white transition-colors duration-200">
-            Gesture-Controlled Brightness Changer
-          </h3>
-          <p className="text-gray-300 text-sm">
-            AI-based gesture recognition system to control hardware brightness. Built with OpenCV, Python & ML.
-          </p>
-        </Card3D>
-
-        {/* Weather App Project */}
-        <Card3D
-          url="https://github.com/PjAlgoMaster/SKYCAST-WEATHER-APP"
-          className="max-w-md"
-        >
-          <img
-            src="/assets/imagecard2.webp"
-            alt="Skycast Weather App"
-            className="w-full h-56 object-cover rounded-xl mb-4 shadow-md"
-          />
-          <h3 className="text-xl font-bold text-blue-300 mb-2 hover:text-white transition-colors duration-200">
-            SKYCAST Weather App
-          </h3>
-          <p className="text-gray-300 text-sm">
-            A responsive real-time weather app with clean UI and weather API integration. Built with React.
-          </p>
-        </Card3D>
+          See all projects on GitHub
+        </motion.a>
       </div>
     </section>
   );

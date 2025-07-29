@@ -1,28 +1,23 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { ReactNode } from "react";
+import React from "react";
 
 interface SectionFadeInProps {
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
   delay?: number;
-  id?: string; // ✅ allow id to be passed
+  id?: string;
 }
 
-export default function SectionFadeIn({
-  children,
-  className = "",
-  delay = 0.16,
-  id, // ✅ accept id
-}: SectionFadeInProps) {
+export default function SectionFadeIn({ children, className = "", delay = 0, id }: SectionFadeInProps) {
   return (
     <motion.section
-      id={id} // ✅ apply id to the section
-      initial={{ opacity: 0, y: 32 }}
+      id={id}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.7 }}
-      transition={{ duration: 0.8, delay }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay }}
       className={className}
     >
       {children}

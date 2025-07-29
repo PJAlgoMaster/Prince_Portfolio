@@ -1,119 +1,107 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-// Glassy, colored fluid overlay only for post-hero sections
+/**
+ * Fluid colored canvas overlay for desktop/tablet (>=768px width).
+ * Composed of animated "blobs" that follow the pointer.
+ * Add <FluidOverlay /> as the first child of <main> or your layout.
+ */
 export default function FluidOverlay() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    // Only enable the overlay if in browser/desktop
+    if (typeof window === "undefined" || !canvasRef.current) return;
+
+    const minWidth = 768;
+    if (window.innerWidth < minWidth) {
+      canvasRef.current.style.display = "none";
+      return;
+    }
+
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    // Always match full viewport + scrollable doc
+    function setCanvasSize() {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = Math.max(window.innerHeight, document.documentElement.scrollHeight);
+    }
+    setCanvasSize();
+    window.addEventListener("resize", setCanvasSize);
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // ✅ At this point, canvas and ctx are guaranteed non-null
-    const safeCanvas = canvas as NonNullable<typeof canvas>;
-    const safeCtx = ctx as CanvasRenderingContext2D;
-
-    let width = (safeCanvas.width = window.innerWidth);
-    let height = (safeCanvas.height = Math.max(window.innerHeight * 1.2, 1200));
-
-    function resize() {
-      width = safeCanvas.width = window.innerWidth;
-      height = safeCanvas.height = Math.max(window.innerHeight * 1.2, 1200);
-    }
-
-    window.addEventListener("resize", resize);
-
-    const blobs = Array.from({ length: 5 }).map((_, i) => ({
-      color: `hsla(${Math.floor(200 + i * 35)},84%,60%,.10)`,
-      r: 250 - i * 32,
-      x: width / 2 + Math.sin(i) * width / 5,
-      y: 1300 + Math.cos(i * i) * 120,
-      px: 0,
-      py: 0,
+    // Blobs config
+    const blobs = Array.from({ length: 6 }).map((_, i) => ({
+      color: `hsla(${200 + i * 40},78%,60%,.18)`,
+      r: 95 + i * 19,
+      x: window.innerWidth / 2 + Math.sin(i) * (window.innerWidth / 4),
+      y: 700 + Math.cos(i * i) * 150,
+      px: 0, py: 0,
     }));
 
-    let mx = width / 2;
-    let my = height / 2 + 500;
+    let mx = window.innerWidth / 2, my = window.innerHeight * 0.7;
 
-    function move(e: MouseEvent | TouchEvent) {
+    function followMouse(e: MouseEvent | TouchEvent) {
       if ("touches" in e && e.touches.length) {
         mx = e.touches[0].clientX;
         my = e.touches[0].clientY;
       } else if ("clientX" in e) {
-        mx = e.clientX;
-        my = e.clientY;
+        mx = (e as MouseEvent).clientX;
+        my = (e as MouseEvent).clientY;
       }
     }
-
-    window.addEventListener("mousemove", move, { passive: true });
-    window.addEventListener("touchmove", move, { passive: true });
+    window.addEventListener("mousemove", followMouse as EventListener, { passive: true });
+    window.addEventListener("touchmove", followMouse as EventListener, { passive: true });
 
     let animationFrame: number;
-
     function animate() {
-      safeCtx.clearRect(0, 0, width, height);
+      if (!canvas || !ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       blobs.forEach((b, i) => {
-        b.px +=
-          (b.x +
-            Math.sin(Date.now() / 2000 + i) * 120 +
-            (mx - width / 2) * 0.15 -
-            b.px) *
-          0.07;
-        b.py +=
-          (b.y +
-            Math.cos(Date.now() / 1850 + i * i) * 110 +
-            (my - height / 1.3) * 0.17 -
-            b.py) *
-          0.07;
-        safeCtx.beginPath();
-        safeCtx.arc(
+        b.px += (b.x + Math.sin(Date.now() / (1700 + i * 120)) * 90 +
+          (mx - canvas.width / 2) * (0.13 + i * 0.029) - b.px) * 0.073;
+        b.py += (b.y + Math.cos(Date.now() / (1500 - i * 95)) * 120 +
+          (my - window.innerHeight / 1.2) * (0.10 + i * 0.023) - b.py) * 0.073;
+        ctx.beginPath();
+        ctx.arc(
           b.px,
           b.py,
-          b.r + Math.sin(Date.now() / 330 + i) * 12,
+          b.r + Math.sin(Date.now() / (1100 + i * 57)) * 9,
           0,
           2 * Math.PI
         );
-        safeCtx.fillStyle = b.color;
-        safeCtx.globalAlpha = 1;
-        safeCtx.shadowColor = b.color;
-        safeCtx.shadowBlur = 39 + i * 17;
-        safeCtx.fill();
+        ctx.fillStyle = b.color;
+        ctx.globalAlpha = 1;
+        ctx.shadowColor = b.color;
+        ctx.shadowBlur = 26 + i * 12;
+        ctx.fill();
       });
-      safeCtx.globalAlpha = 1;
-      safeCtx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
       animationFrame = requestAnimationFrame(animate);
     }
-
-    blobs.forEach((b) => {
-      b.px = b.x;
-      b.py = b.y;
-    });
-
+    blobs.forEach(b => { b.px = b.x; b.py = b.y; });
     animationFrame = requestAnimationFrame(animate);
 
     return () => {
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("touchmove", move);
+      window.removeEventListener("resize", setCanvasSize);
+      window.removeEventListener("mousemove", followMouse as EventListener);
+      window.removeEventListener("touchmove", followMouse as EventListener);
       cancelAnimationFrame(animationFrame);
     };
   }, []);
 
+  // Only render on desktop/tablet for perf
   return (
     <canvas
       ref={canvasRef}
-      className="fixed left-0 w-full h-full z-0 pointer-events-none select-none"
+      className="fixed left-0 top-0 w-full h-full z-0 pointer-events-none select-none hidden md:block"
       style={{
-        filter: "blur(38px)",
-        top: "58vh",
-        mixBlendMode: "screen",
-        position: "fixed",
+        filter: "blur(28px)",
+        mixBlendMode: "screen"
       }}
-      width={1920}
-      height={1600}
       aria-hidden
     />
   );

@@ -1,28 +1,27 @@
-"use client"
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import Image from "next/image"
+"use client";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function Projects() {
-  const [repos, setRepos] = useState<any[]>([])
+  const [repos, setRepos] = useState<any[]>([]);
 
   useEffect(() => {
     fetch("/api/github-projects")
-      .then(res => res.json())
-      .then(setRepos)
-  }, [])
+      .then((res) => res.json())
+      .then(setRepos);
+  }, []);
 
   return (
-    <main className="min-h-screen w-full bg-black text-white pt-24 pb-20 px-4 overflow-x-hidden">
-      
+    <main className="min-h-screen w-full bg-black text-white pt-24 pb-16 px-2 xs:px-3 sm:px-4">
       {/* Profile Image with Glow */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.7 }}
-        className="flex justify-center mb-10"
+        className="flex justify-center mb-8"
       >
-        <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-yellow-400 shadow-[0_0_20px_#FFD700] overflow-hidden">
+        <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-yellow-400 shadow-[0_0_20px_#FFD700] overflow-hidden">
           <Image
             src="/prince.jpg"
             alt="Profile"
@@ -39,13 +38,13 @@ export default function Projects() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="text-4xl sm:text-6xl font-extrabold text-white mb-14 text-center drop-shadow-[0_0_15px_#FFD700]"
+        className="text-3xl sm:text-5xl font-extrabold text-white mb-8 text-center drop-shadow-[0_0_15px_#FFD700]"
       >
         Projects
       </motion.h1>
 
       {/* Project Cards */}
-      <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4 sm:px-6 md:px-10">
+      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 px-0">
         {repos.slice(0, 6).map((repo, idx) => (
           <motion.div
             key={repo.id}
@@ -58,15 +57,16 @@ export default function Projects() {
               stiffness: 80,
             }}
             whileHover={{
-              scale: 1.05,
-              boxShadow: "0 0 20px rgba(255, 215, 0, 0.4)",
+              scale: 1.04,
+              boxShadow: "0 0 14px 2px rgba(255, 215, 0, 0.32)",
             }}
-            className="bg-gradient-to-br from-zinc-900 via-black to-gray-900 border border-yellow-500/30 rounded-2xl p-5 transition-all duration-300 shadow-md hover:shadow-yellow-500/40"
+            className="bg-gradient-to-br from-zinc-900 via-black to-gray-900 border border-yellow-500/30 rounded-2xl p-4 xs:p-5 transition-all duration-300 shadow-md hover:shadow-yellow-500/40
+              flex flex-col justify-between h-full max-w-full"
           >
-            <h3 className="text-lg font-semibold text-yellow-300 mb-2">
+            <h3 className="text-base sm:text-lg font-semibold text-yellow-300 mb-2 break-words">
               {repo.name}
             </h3>
-            <p className="text-sm text-gray-300 mb-4 leading-relaxed">
+            <p className="text-xs sm:text-sm text-gray-300 mb-4 leading-relaxed line-clamp-4">
               {repo.description || "No description provided."}
             </p>
             <a
@@ -82,7 +82,7 @@ export default function Projects() {
       </div>
 
       {/* GitHub Link */}
-      <div className="mt-16 text-center">
+      <div className="mt-12 text-center">
         <a
           href="https://github.com/PjAlgoMaster"
           className="text-lg font-semibold text-yellow-400 underline hover:text-yellow-300"
@@ -93,5 +93,5 @@ export default function Projects() {
         </a>
       </div>
     </main>
-  )
+  );
 }
